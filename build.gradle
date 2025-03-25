@@ -583,24 +583,16 @@ release {
     newVersionCommitMessage = 'update snapshot version'
     tagTemplate = 'v${version}'
     buildTasks = ['classes']
-    // Dynamically set properties with default values
-    failOnSnapshotDependencies = (project.hasProperty('release.failOnSnapshotDependencies')
-            ? project.property('release.failOnSnapshotDependencies').toBoolean()
-            : true)
 
-    pushReleaseVersionBranch = (project.hasProperty('release.pushReleaseVersionBranch')
-            ? project.property('release.pushReleaseVersionBranch').toString()
-            : null)
     git {
         requireBranch.set('test')
     }
 
     // Dynamically set properties with default values
-    failOnSnapshotDependencies = (project.hasProperty('release.failOnSnapshotDependencies')
-            ? project.property('release.failOnSnapshotDependencies').toBoolean()
-            : true)
+    failOnSnapshotDependencies = providers.gradleProperty("release.failOnSnapshotDependencies")
+            .map(val -> Boolean.parseBoolean(val))
+            .getOrElse(true)
 
-    pushReleaseVersionBranch = (project.hasProperty('release.pushReleaseVersionBranch')
-            ? project.property('release.pushReleaseVersionBranch').toString()
-            : null)
+    pushReleaseVersionBranch = providers.gradleProperty("release.pushReleaseVersionBranch")
+            .getOrElse(null)
 }
